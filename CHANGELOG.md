@@ -6,6 +6,18 @@ versionnage [SemVer](https://semver.org/lang/fr/).
 
 ## [Non publié]
 
+## [0.2.3] — 2026-07-15
+### Corrigé
+- **Plus de boucle de redémarrage** quand le dossier de données est
+  inaccessible : au lieu d'une exception non catchée (crash → relance en
+  boucle), le serveur vérifie que `dataDir` est créable et **inscriptible** au
+  démarrage, et sort proprement avec un message clair sinon.
+- `install-service.sh` **migre** une config héritée : un `dataDir` pointant vers
+  `/var/lib/homeserverhub` (ancien service `DynamicUser`, inaccessible au compte
+  utilisateur) est retiré automatiquement → emplacement par défaut dans le home.
+  C'était la cause du service qui démarrait puis s'arrêtait après passage en
+  `User=`.
+
 ## [0.2.2] — 2026-07-15
 ### Ajouté
 - `scripts/linux/update-service.sh` : met à jour le binaire du service (avec
@@ -71,7 +83,8 @@ versionnage [SemVer](https://semver.org/lang/fr/).
 - Contrat de synchronisation versionné dans `docs/sync-contract.md`.
 - Service systemd et README bilingue (EN/FR).
 
-[Non publié]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.2...HEAD
+[Non publié]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.1.0...v0.2.0

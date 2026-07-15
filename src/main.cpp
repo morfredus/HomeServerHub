@@ -8,6 +8,7 @@
  */
 
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -56,7 +57,8 @@ bool validDomain(const std::string& d) {
 class Registry {
 public:
     explicit Registry(std::string dataDir) : dataDir_(std::move(dataDir)) {
-        std::filesystem::create_directories(dataDir_);
+        std::error_code ec;
+        std::filesystem::create_directories(dataDir_, ec);  // writability déjà vérifiée par main
     }
 
     hsh::ChangeStore& store(const std::string& domain) {
@@ -117,6 +119,29 @@ int main(int argc, char** argv) {
 
     // dataDir non fixé -> emplacement par défaut conforme à l'OS (paths.h).
     if (cfg.dataDir.empty()) cfg.dataDir = hsh::defaultDataDir();
+
+    // Vérifie que le dossier de données est CRÉABLE et ACCESSIBLE EN ÉCRITURE
+    // avant tout : sinon on affiche une erreur claire et on sort proprement,
+    // au lieu de planter en boucle (ex. dataDir hérité pointant vers /var/lib
+    // alors que le service tourne sous un compte non privilégié).
+    {
+        std::error_code ec;
+        std::filesystem::create_directories(cfg.dataDir, ec);
+        const std::filesystem::path probe =
+            std::filesystem::path(cfg.dataDir) / ".hsh_write_test";
+        bool writable = false;
+        { std::ofstream t(probe); writable = t.good(); }
+        std::error_code rm; std::filesystem::remove(probe, rm);
+        if (!writable) {
+            std::cerr << "[HomeServerHub] dossier de données inaccessible en écriture : "
+                      << cfg.dataDir;
+            if (ec) std::cerr << " (" << ec.message() << ")";
+            std::cerr << "\n  Corrigez \"dataDir\" dans " << configPath
+                      << " (ou supprimez cette clé pour l'emplacement par défaut), puis redémarrez."
+                      << std::endl;
+            return 1;
+        }
+    }
 
     Registry registry(cfg.dataDir);
     const int preloaded = registry.preload();

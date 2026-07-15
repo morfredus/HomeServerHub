@@ -76,12 +76,19 @@ if [[ ! -f "$CONF_DEST" ]]; then
 }
 JSON
     fi
-    # dataDir volontairement absent : le service tourne avec StateDirectory=
-    # homeserverhub, donc HomeServerHub écrit dans /var/lib/homeserverhub
-    # automatiquement (variable $STATE_DIRECTORY, cf. paths.cpp).
+    # dataDir volontairement absent : résolu par défaut vers le home de
+    # l'utilisateur (~/.local/share/morfredus/HomeServerHub, cf. paths.cpp).
     echo "Config créée : $CONF_DEST  (édite-la pour changer le port ou ajouter un token)"
 else
-    echo "Config       : $CONF_DEST  (existante, conservée)"
+    # Migration d'une config héritée : un dataDir pointant vers /var/lib n'est
+    # plus accessible (le service tourne désormais sous l'utilisateur, pas root).
+    # On retire la clé -> emplacement par défaut dans le home.
+    if grep -q '/var/lib/homeserverhub' "$CONF_DEST" 2>/dev/null; then
+        sed -i '/"dataDir"/d' "$CONF_DEST"
+        echo "Config       : $CONF_DEST  (dataDir hérité /var/lib retiré -> home utilisateur)"
+    else
+        echo "Config       : $CONF_DEST  (existante, conservée)"
+    fi
 fi
 
 # --- Pré-création du dossier de données de l'utilisateur ------------------
