@@ -1,6 +1,8 @@
 <#
 .SYNOPSIS
-    Installe HomeServerHub en démarrage automatique sous Windows.
+    Installe (ou met à jour) HomeServerHub en démarrage automatique sous Windows.
+    Ré-exécuter ce script avec une nouvelle version du binaire = mise à jour :
+    la tâche est arrêtée, l'exe remplacé, puis la tâche redémarrée.
 
 .DESCRIPTION
     HomeServerHub est une application console : plutôt qu'un « vrai » service
@@ -77,18 +79,24 @@ Write-Host "Binaire      : $ExePath"
 
 # --- Installer binaire + config -------------------------------------------
 New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
+
+# Mise à jour : si la tâche tourne déjà, l'arrêter pour libérer l'exe (sinon
+# Copy-Item échoue, fichier verrouillé). Ré-exécuter ce script = mettre à jour.
+if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) {
+    Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+    Start-Sleep -Milliseconds 500
+}
 Copy-Item $ExePath $ExeDest -Force
 Write-Host "Installé     : $ExeDest"
 
+# Données dans un dossier ACCESSIBLE (sous ProgramData), pas dans le profil
+# caché du compte SYSTEM : on fixe donc dataDir explicitement dans la config.
+$DataDir = Join-Path $InstallDir 'data'
+New-Item -ItemType Directory -Force -Path $DataDir | Out-Null
 if (-not (Test-Path $ConfDest)) {
-    $exampleConf = Join-Path $repoRoot 'config.example.json'
-    if (Test-Path $exampleConf) {
-        Copy-Item $exampleConf $ConfDest -Force
-    } else {
-        @{ host = '0.0.0.0'; port = 8080; dataDir = 'data'; token = '' } |
-            ConvertTo-Json | Set-Content -Path $ConfDest -Encoding UTF8
-    }
-    Write-Host "Config créée : $ConfDest  (édite-la pour le port ou un token)"
+    @{ host = '0.0.0.0'; port = 8080; dataDir = $DataDir; token = '' } |
+        ConvertTo-Json | Set-Content -Path $ConfDest -Encoding UTF8
+    Write-Host "Config créée : $ConfDest  (données: $DataDir)"
 } else {
     Write-Host "Config       : $ConfDest  (existante, conservée)"
 }

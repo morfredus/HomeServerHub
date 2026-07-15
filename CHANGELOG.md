@@ -6,6 +6,19 @@ versionnage [SemVer](https://semver.org/lang/fr/).
 
 ## [Non publié]
 
+## [0.2.2] — 2026-07-15
+### Ajouté
+- `scripts/linux/update-service.sh` : met à jour le binaire du service (avec
+  `--build` optionnel), arrête/remplace/redémarre, sans toucher config ni
+  données ; affiche la transition de version.
+
+### Modifié
+- `scripts/windows/install-service.ps1` fait aussi office de **mise à jour** :
+  ré-exécuté, il arrête la tâche pour libérer l'exe, le remplace, puis redémarre.
+- Windows : les données vont dans un dossier **accessible** (`dataDir` explicite
+  sous `%ProgramData%\HomeServerHub\data`) au lieu du profil caché du compte
+  SYSTEM.
+
 ## [0.2.1] — 2026-07-15
 ### Modifié
 - **Dossier de données par défaut accessible à l'utilisateur.** Auparavant, le
@@ -58,7 +71,8 @@ versionnage [SemVer](https://semver.org/lang/fr/).
 - Contrat de synchronisation versionné dans `docs/sync-contract.md`.
 - Service systemd et README bilingue (EN/FR).
 
-[Non publié]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.1...HEAD
+[Non publié]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/morfredus/HomeServerHub_travail/releases/tag/v0.1.0

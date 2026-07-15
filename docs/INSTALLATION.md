@@ -130,6 +130,22 @@ sudo systemctl stop homeserverhub       # arrêter
 journalctl -u homeserverhub -e          # journaux (diagnostic)
 ```
 
+### Mettre à jour le binaire
+
+Pour installer une nouvelle version **sans refaire l'installation** (config et
+données conservées) :
+
+```bash
+git pull
+sudo ./scripts/linux/update-service.sh --build
+```
+
+`--build` recompile d'abord (en tant que votre utilisateur), puis le script
+arrête le service, remplace `/usr/local/bin/HomeServerHub` et redémarre — il
+affiche la transition de version (ex. `0.2.0 -> 0.2.1`). Sans `--build`, il
+utilise le binaire déjà présent dans `build/` (ou `build-arm64/`), ou un chemin
+que vous passez en argument.
+
 ### Pare-feu Linux
 
 Si `ufw` est actif, autorisez le port :
