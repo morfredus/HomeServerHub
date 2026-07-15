@@ -53,13 +53,15 @@ le système :
 
 | Système | Emplacement des données |
 |---------|-------------------------|
-| Linux (service systemd) | `/var/lib/homeserverhub` (via `StateDirectory`, variable `$STATE_DIRECTORY`) |
-| Linux (lancement manuel) | `$XDG_DATA_HOME/homeserverhub` ou `~/.local/share/homeserverhub` |
-| Windows | `%ProgramData%\HomeServerHub` (ou `%LOCALAPPDATA%\HomeServerHub`) |
+| Linux | `~/.local/share/morfredus/HomeServerHub` (ou `$XDG_DATA_HOME/morfredus/HomeServerHub`) |
+| Windows | `%LOCALAPPDATA%\morfredus\HomeServerHub` (ou `%ProgramData%\morfredus\HomeServerHub`) |
 
-Le dossier retenu est affiché dans le journal au démarrage. Les données
-**survivent aux redémarrages** : au lancement, le hub recharge les domaines déjà
-présents.
+Ces emplacements sont **accessibles à l'utilisateur** (contrairement à
+`/var/lib`). Le service systemd tourne donc **en tant que votre utilisateur**
+(`User=`), pas en compte dynamique — `install-service.sh` s'en charge
+automatiquement. Le dossier retenu est affiché dans le journal au démarrage, et
+les données **survivent aux redémarrages** (le hub recharge les domaines
+existants au lancement).
 
 **Pour être joignable par un autre poste du réseau, `host` doit valoir `0.0.0.0`.**
 C'est la valeur par défaut ; ne la mettez à `127.0.0.1` que pour un test purement local.

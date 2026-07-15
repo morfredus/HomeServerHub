@@ -6,6 +6,18 @@ versionnage [SemVer](https://semver.org/lang/fr/).
 
 ## [Non publié]
 
+## [0.2.1] — 2026-07-15
+### Modifié
+- **Dossier de données par défaut accessible à l'utilisateur.** Auparavant, le
+  service systemd (`DynamicUser` + `StateDirectory`) écrivait dans
+  `/var/lib/homeserverhub`, inaccessible à l'utilisateur. Désormais les données
+  vont, par défaut, dans un emplacement standard **sous le home de l'utilisateur** :
+  - Linux : `~/.local/share/morfredus/HomeServerHub` (XDG) ;
+  - Windows : `%LOCALAPPDATA%\morfredus\HomeServerHub`.
+  Le service systemd tourne maintenant **en tant que l'utilisateur** (`User=`),
+  plus en `DynamicUser` ; `install-service.sh` injecte l'utilisateur courant et
+  pré-crée le dossier. (`dataDir` explicite dans `config.json` reste prioritaire.)
+
 ## [0.2.0] — 2026-07-15
 ### Ajouté
 - Stockage des données à l'emplacement conforme à l'OS quand `dataDir` n'est pas
@@ -46,6 +58,7 @@ versionnage [SemVer](https://semver.org/lang/fr/).
 - Contrat de synchronisation versionné dans `docs/sync-contract.md`.
 - Service systemd et README bilingue (EN/FR).
 
-[Non publié]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.0...HEAD
+[Non publié]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/morfredus/HomeServerHub_travail/releases/tag/v0.1.0

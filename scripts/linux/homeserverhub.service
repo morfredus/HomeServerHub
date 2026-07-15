@@ -1,13 +1,16 @@
 # Service systemd pour HomeServerHub.
 #
-# Installation :
-#   sudo cp HomeServerHub /usr/local/bin/
-#   sudo mkdir -p /etc/homeserverhub /var/lib/homeserverhub
-#   sudo cp config.example.json /etc/homeserverhub/config.json   # puis l'éditer
-#   sudo cp scripts/linux/homeserverhub.service /etc/systemd/system/
-#   sudo systemctl daemon-reload && sudo systemctl enable --now homeserverhub
+# Le service tourne EN TANT QUE L'UTILISATEUR (User=/Group=), pour que ses
+# données restent accessibles dans ~/.local/share/morfredus/HomeServerHub
+# (et non dans /var/lib, réservé au root). Le script install-service.sh
+# remplace __RUN_USER__ par l'utilisateur courant ; en installation manuelle,
+# remplacez-le vous-même (ou ajoutez un drop-in User=/Group=).
 #
-# Dans /etc/homeserverhub/config.json, régler "dataDir": "/var/lib/homeserverhub".
+# Installation manuelle :
+#   sudo cp HomeServerHub /usr/local/bin/
+#   sudo mkdir -p /etc/homeserverhub && sudo cp config.example.json /etc/homeserverhub/config.json
+#   sed 's/__RUN_USER__/votreuser/g' scripts/linux/homeserverhub.service | sudo tee /etc/systemd/system/homeserverhub.service
+#   sudo systemctl daemon-reload && sudo systemctl enable --now homeserverhub
 
 [Unit]
 Description=HomeServerHub — socle de synchronisation offline-first
@@ -16,16 +19,11 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+User=__RUN_USER__
+Group=__RUN_USER__
 ExecStart=/usr/local/bin/HomeServerHub /etc/homeserverhub/config.json
-WorkingDirectory=/var/lib/homeserverhub
 Restart=on-failure
 RestartSec=3
-
-# Durcissement minimal.
-DynamicUser=yes
-StateDirectory=homeserverhub
-ProtectSystem=strict
-ProtectHome=yes
 NoNewPrivileges=yes
 
 [Install]

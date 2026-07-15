@@ -22,6 +22,11 @@ UNIT_DEST="/etc/systemd/system/$SERVICE_NAME.service"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
+# Utilisateur sous lequel tourne le service : celui qui a lancé sudo (pas root),
+# pour que les données aillent dans SON ~/.local/share/morfredus/HomeServerHub.
+RUN_USER="${SUDO_USER:-$(logname 2>/dev/null || echo root)}"
+RUN_HOME="$(getent passwd "$RUN_USER" | cut -d: -f6)"
+
 # --- Doit être root -------------------------------------------------------
 if [[ "${EUID}" -ne 0 ]]; then
     echo "Ce script doit être lancé avec sudo :  sudo $0 $*" >&2
@@ -79,8 +84,17 @@ else
     echo "Config       : $CONF_DEST  (existante, conservée)"
 fi
 
+# --- Pré-création du dossier de données de l'utilisateur ------------------
+# Le service tourne en tant que $RUN_USER ; ses données vont dans son home.
+DATA_DIR="$RUN_HOME/.local/share/morfredus/HomeServerHub"
+install -d -o "$RUN_USER" -g "$RUN_USER" "$DATA_DIR"
+echo "Utilisateur  : $RUN_USER"
+echo "Données      : $DATA_DIR"
+
 # --- Installer et démarrer le service -------------------------------------
-install -m 0644 "$SCRIPT_DIR/homeserverhub.service" "$UNIT_DEST"
+# On injecte l'utilisateur dans l'unité (User=/Group=).
+sed "s/__RUN_USER__/$RUN_USER/g" "$SCRIPT_DIR/homeserverhub.service" > "$UNIT_DEST"
+chmod 0644 "$UNIT_DEST"
 systemctl daemon-reload
 systemctl enable --now "$SERVICE_NAME"
 
