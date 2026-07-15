@@ -109,6 +109,15 @@ private:
 } // namespace
 
 int main(int argc, char** argv) {
+    // Vérification de version fiable, sans démarrer le serveur.
+    if (argc > 1) {
+        const std::string a1 = argv[1];
+        if (a1 == "--version" || a1 == "-v") {
+            std::cout << "HomeServerHub " << HSH_VERSION << std::endl;
+            return 0;
+        }
+    }
+
     const std::string configPath = (argc > 1) ? argv[1] : "config.json";
 
     hsh::Config cfg;

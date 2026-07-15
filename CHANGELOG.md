@@ -6,6 +6,20 @@ versionnage [SemVer](https://semver.org/lang/fr/).
 
 ## [Non publié]
 
+## [0.2.6] — 2026-07-15
+### Ajouté
+- Option **`--version` / `-v`** : affiche la version sans démarrer le serveur
+  (vérification fiable — le nom et le numéro sont stockés séparément dans le
+  binaire, donc introuvables par un simple `grep`).
+
+### Corrigé
+- `update-service.sh --build` fait désormais **`git pull` puis une
+  reconstruction propre** (`rm -rf build`) : après un simple `git pull`, CMake ne
+  recompilait pas toujours et l'ancien binaire (version périmée) était recopié.
+  La mise à jour du service ne remplaçait alors rien.
+- Documentation : procédure de mise à jour **complète et fiable** dans
+  `docs/INSTALLATION.md` (build neuf + vérification via `--version`).
+
 ## [0.2.5] — 2026-07-15
 ### Ajouté
 - **Identité de journal (« époque ») par domaine** : un `journalId` stable est
@@ -101,7 +115,8 @@ versionnage [SemVer](https://semver.org/lang/fr/).
 - Contrat de synchronisation versionné dans `docs/sync-contract.md`.
 - Service systemd et README bilingue (EN/FR).
 
-[Non publié]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.5...HEAD
+[Non publié]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.6...HEAD
+[0.2.6]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/morfredus/HomeServerHub_travail/compare/v0.2.2...v0.2.3

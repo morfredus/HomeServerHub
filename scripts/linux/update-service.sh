@@ -38,10 +38,13 @@ if [[ ! -f "$UNIT_DEST" ]]; then
 fi
 
 # --- Recompilation optionnelle (en tant que l'utilisateur, pas root) ------
+# --build : récupère le code (git pull) PUIS reconstruit à neuf (rm -rf build).
+# Le build neuf est indispensable : après un simple git pull, CMake ne rebâtit
+# pas toujours (le numéro de version resterait périmé dans le binaire).
 BIN_SRC=""
 if [[ "${1:-}" == "--build" ]]; then
-    echo "Recompilation (utilisateur $RUN_USER)…"
-    sudo -u "$RUN_USER" bash -c "cd '$REPO_ROOT' && cmake --preset linux && cmake --build --preset linux"
+    echo "Mise à jour du code + recompilation propre (utilisateur $RUN_USER)…"
+    sudo -u "$RUN_USER" bash -c "cd '$REPO_ROOT' && git pull --ff-only && rm -rf build && cmake --preset linux && cmake --build --preset linux"
     BIN_SRC="$REPO_ROOT/build/HomeServerHub"
 elif [[ -n "${1:-}" ]]; then
     BIN_SRC="$1"
@@ -58,7 +61,7 @@ if [[ -z "$BIN_SRC" || ! -f "$BIN_SRC" ]]; then
     echo "ou passe le chemin :  sudo $0 /chemin/vers/HomeServerHub" >&2
     exit 1
 fi
-echo "Nouveau binaire : $BIN_SRC"
+echo "Nouveau binaire : $BIN_SRC  [$("$BIN_SRC" --version 2>/dev/null || echo 'version ?')]"
 
 # --- Version avant (via le service en cours) ------------------------------
 PORT="$(grep -oE '"port"[^0-9]*[0-9]+' "$CONF_DEST" 2>/dev/null | grep -oE '[0-9]+' || echo 8080)"

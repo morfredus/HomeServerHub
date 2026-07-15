@@ -132,19 +132,51 @@ journalctl -u homeserverhub -e          # journaux (diagnostic)
 
 ### Mettre à jour le binaire
 
-Pour installer une nouvelle version **sans refaire l'installation** (config et
-données conservées) :
+Installer une nouvelle version **sans refaire l'installation** (config et
+données conservées).
+
+#### Méthode simple (un seul appel)
 
 ```bash
-git pull
 sudo ./scripts/linux/update-service.sh --build
 ```
 
-`--build` recompile d'abord (en tant que votre utilisateur), puis le script
-arrête le service, remplace `/usr/local/bin/HomeServerHub` et redémarre — il
-affiche la transition de version (ex. `0.2.0 -> 0.2.1`). Sans `--build`, il
-utilise le binaire déjà présent dans `build/` (ou `build-arm64/`), ou un chemin
-que vous passez en argument.
+`--build` fait tout : `git pull`, **reconstruction propre** (`rm -rf build`
+puis compilation, en tant que l'utilisateur), puis arrêt du service,
+remplacement de `/usr/local/bin/HomeServerHub` et redémarrage. Le script affiche
+la version du nouveau binaire et la transition (ex. `0.2.5 -> 0.2.6`).
+
+#### Méthode manuelle (ordre exact, en cas de doute)
+
+À suivre pas à pas si la mise à jour semble ne rien changer :
+
+```bash
+cd ~/Codage/Apps/HomeServerHub        # adapter au chemin du dépôt
+
+git pull                              # 1. récupérer le code
+cat VERSION                           # 2. confirmer la nouvelle version
+
+rm -rf build                          # 3. build NEUF (étape indispensable)
+cmake --preset linux
+cmake --build --preset linux
+
+./build/HomeServerHub --version       # 4. vérifier la version compilée
+
+sudo systemctl stop homeserverhub     # 5. remplacer le binaire du service
+sudo install -m 0755 build/HomeServerHub /usr/local/bin/HomeServerHub
+sudo systemctl restart homeserverhub
+
+curl http://localhost:8080/api/health # 6. vérifier la version en service
+```
+
+> **`rm -rf build` (étape 3) est indispensable.** Après un simple `git pull`,
+> CMake ne recompile pas toujours : l'ancien binaire resterait dans `build/` et
+> serait recopié tel quel (version inchangée). Un dossier `build/` neuf force la
+> réintégration du numéro de version.
+>
+> **Vérifier la version** avec `HomeServerHub --version` (fiable) plutôt qu'en
+> cherchant une chaîne dans le binaire : « HomeServerHub » et le numéro y sont
+> stockés séparément.
 
 ### Pare-feu Linux
 
