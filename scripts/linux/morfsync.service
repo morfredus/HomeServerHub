@@ -30,7 +30,7 @@ Group=__RUN_USER__
 # Sans ça, le hub ne résout pas son dossier de données et plante (SIGABRT).
 Environment=HOME=__RUN_HOME__
 WorkingDirectory=__RUN_HOME__
-ExecStart=__APP_DIR__/morfSync __APP_DIR__/morfsync.json
+ExecStart=__APP_DIR__/morfSync __CONFIG_DIR__/morfsync.json
 Restart=on-failure
 RestartSec=3
 NoNewPrivileges=yes

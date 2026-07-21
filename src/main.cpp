@@ -186,6 +186,17 @@ int main(int argc, char** argv) {
     // existants appellent déjà /api/status.
     server.route("GET", "/status", [&beacon, &registry](const hsh::HttpRequest&) {
         json body = json::parse(beacon.identityJson(beacon.uptimeSeconds()));
+
+        // « proto » ne désigne PAS la même chose dans les deux documents, et
+        // c'est la convention du parc, pas une négligence :
+        //   heartbeat  proto = "morfbeacon/1"  → le protocole de transport,
+        //                                        identique pour tout le monde
+        //   /status    proto = "morfsync/1"    → la version de CE document
+        // morfMonitor sert « morfmonitor/1 », morfTemplateService
+        // « morftemplate/1 ». Laisser « morfbeacon/1 » ici annoncerait un
+        // datagramme de présence là où l'on sert un document de statut.
+        body["proto"] = "morfsync/1";
+
         // Le heartbeat reste court ; le détail vit ici. « Push presence,
         // pull detail. »
         body["metrics"] = {{"domains", registry.statusJson().size()}};
