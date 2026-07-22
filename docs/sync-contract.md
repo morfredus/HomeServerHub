@@ -1,7 +1,7 @@
 # morfSync — Contrat de synchronisation (v1)
 
 > Document de référence de l'écosystème. Tous les projets clients (ComponentHub,
-> MeteoHub, RaspberryDashboard, SiteWatch, morfBeacon, morfUpdate…) suivent ce
+> MeteoHub, morfDashboard, SiteWatch, morfBeacon, morfUpdate…) suivent ce
 > contrat. Il définit **le modèle de données synchronisable**, **le protocole
 > REST**, et **l'interface de stockage** — rien d'autre. Le reste de chaque
 > application ignore totalement comment la synchro fonctionne.

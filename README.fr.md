@@ -8,7 +8,7 @@
 ![License](https://img.shields.io/badge/License-GPL--3.0--only-blue)
 
 **morfSync** est le socle de synchronisation *offline-first* de l'écosystème
-*morf* (ComponentHub, MeteoHub, RaspberryDashboard, SiteWatch…). Ce n'est **pas**
+*morf* (ComponentHub, MeteoHub, morfDashboard, SiteWatch…). Ce n'est **pas**
 une base de données. Chaque client garde sa propre copie locale des données et
 travaille dessus sans réseau. Le hub ne sert qu'à maintenir toutes les copies
 cohérentes sur le réseau local.

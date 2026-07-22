@@ -8,7 +8,7 @@
 ![License](https://img.shields.io/badge/License-GPL--3.0--only-blue)
 
 **morfSync** is the offline-first synchronization backbone of the *morf*
-ecosystem (ComponentHub, MeteoHub, RaspberryDashboard, SiteWatch…). It is **not**
+ecosystem (ComponentHub, MeteoHub, morfDashboard, SiteWatch…). It is **not**
 a database. Each client keeps its own local copy of the data and works on it
 without any network. The hub only exists to keep every copy consistent on the
 local network.
