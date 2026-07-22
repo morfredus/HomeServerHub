@@ -95,7 +95,6 @@ Quick check: `curl http://localhost:8080/api/health`
 beginner walkthrough: [docs/GUIDE_DEBUTANT.md](docs/GUIDE_DEBUTANT.md) (French).
 
 - Any platform: `sudo ./service.py install` (also `update`, `uninstall`, `status`)
-- The former `scripts/linux/install-service.sh` and its PowerShell twin still work
 
 ## Repository layout
 

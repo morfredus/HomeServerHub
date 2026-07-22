@@ -97,7 +97,6 @@ configuration de l'écoute (adresse/port), pare-feu : voir
 débuter : [docs/GUIDE_DEBUTANT.md](docs/GUIDE_DEBUTANT.md).
 
 - Toutes plateformes : `sudo ./service.py install` (aussi `update`, `uninstall`, `status`)
-- Les anciens `scripts/linux/install-service.sh` et leur jumeau PowerShell fonctionnent toujours
 
 ## Organisation du dépôt
 

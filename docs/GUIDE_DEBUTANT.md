@@ -138,7 +138,7 @@ le lancer à la main.
 
 **Sur Raspberry Pi / Linux :**
 ```bash
-sudo ./scripts/linux/install-service.sh
+sudo ./service.py install
 ```
 
 **Sur Windows** — ouvrez **PowerShell en administrateur** (clic droit →
@@ -211,7 +211,7 @@ Si vous mettez un `token`, les clients devront ajouter l'en-tête
 
 | Symptôme | Cause probable | Solution |
 |----------|----------------|----------|
-| `Unit morfSync.service not found` (Linux) | Mauvaise casse ou service non installé | Le nom est **`morfsync`** (minuscules). Relancez `sudo ./scripts/linux/install-service.sh`. |
+| `Unit morfSync.service not found` (Linux) | Mauvaise casse ou service non installé | Le nom est **`morfsync`** (minuscules). Relancez `sudo ./service.py install`. |
 | `localhost:8080` marche, mais **pas** depuis un autre poste | Pare-feu qui bloque le port | Windows : relancez le script en admin (il ouvre le pare-feu). Linux : `sudo ufw allow 8080/tcp`. |
 | Un autre poste ne répond pas | Mauvaise IP, ou `host` mis à `127.0.0.1` | Vérifiez l'IP (`hostname -I` / `ipconfig`) et que `config.json` a `"host": "0.0.0.0"`. |
 | `impossible d'ouvrir le port 8080 (déjà utilisé ?)` | Un autre programme (ou un 2ᵉ hub) occupe le port | Changez le `port` dans `config.json`, ou fermez l'autre programme. |

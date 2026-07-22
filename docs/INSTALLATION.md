@@ -58,7 +58,7 @@ le système :
 
 Ces emplacements sont **accessibles à l'utilisateur** (contrairement à
 `/var/lib`). Le service systemd tourne donc **en tant que votre utilisateur**
-(`User=`), pas en compte dynamique — `install-service.sh` s'en charge
+(`User=`), pas en compte dynamique — `service.py install` s'en charge
 automatiquement. Le dossier retenu est affiché dans le journal au démarrage, et
 les données **survivent aux redémarrages** (le hub recharge les domaines
 existants au lancement).
@@ -91,7 +91,7 @@ Après modification de la config, **redémarrez** le service (voir plus bas).
 Depuis la racine du dépôt, après avoir compilé :
 
 ```bash
-sudo ./scripts/linux/install-service.sh
+sudo ./service.py install
 ```
 
 Le script : installe le binaire dans `/usr/local/bin`, crée
@@ -100,7 +100,7 @@ l'active au démarrage, le lance, et teste `/api/health`.
 
 Désinstallation :
 ```bash
-sudo ./scripts/linux/install-service.sh --uninstall
+sudo ./service.py uninstall
 ```
 
 ### Méthode manuelle (équivalent, pour comprendre)
@@ -118,7 +118,7 @@ sudo systemctl enable --now morfsync                       # nom en minuscules
 > `systemctl start MorfSync` (mauvaise casse) échouera (« Unit not found »).
 
 Le service tourne **en tant que votre utilisateur** (`User=`) ; ses données vont
-dans `~/.local/share/morfredus/morfSync` (voir §1). `install-service.sh` injecte
+dans `~/.local/share/morfredus/morfSync` (voir §1). `service.py install` injecte
 l'utilisateur et son home automatiquement.
 
 ### Piloter le service
@@ -138,7 +138,7 @@ données conservées).
 #### Méthode simple (un seul appel)
 
 ```bash
-sudo ./scripts/linux/update-service.sh --build
+sudo ./service.py update --build
 ```
 
 `--build` fait tout : `git pull`, **reconstruction propre** (`rm -rf` du dossier
@@ -161,7 +161,7 @@ Le **preset est auto-détecté** selon l'architecture : `linux-arm64` sur un
 Raspberry Pi 64 bits, `linux` sinon. Le forcer au besoin :
 
 ```bash
-sudo ./scripts/linux/update-service.sh --build linux-arm64
+sudo ./service.py update --build linux-arm64
 ```
 
 #### Méthode manuelle (ordre exact, en cas de doute)
