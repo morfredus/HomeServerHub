@@ -6,6 +6,28 @@ versionnage [SemVer](https://semver.org/lang/fr/).
 
 ## [Non publié]
 
+## [0.3.0] – 2026-07-22
+
+### Ajouté
+
+- **morfSync s'annonce sur le réseau (protocole morfbeacon/1) et sert `/status`.**
+  Premier service du parc, il précédait le protocole que les autres respectent
+  et restait invisible dans l'onglet Écosystème de morfMonitor. Il n'embarque
+  pas morfBeacon (qui exige Qt) : c'est une implémentation sans dépendance,
+  validée comme les autres par `check-protocol.py`. `/status` cohabite avec
+  `/api/status`, que des clients existants appellent déjà.
+
+### Modifié
+
+- **La configuration revient dans `/etc/morfsync`**, à sa place selon la FHS —
+  morfSync y était déjà avant d'être aligné par erreur sur les autres. Le
+  déplacement est déclaré (`migrate_from`) : la config existante est adoptée,
+  jamais écrasée. Le binaire va dans `/opt/morfsync`.
+- **Installation, mise à jour et désinstallation par `./service.py`**, le point
+  d'entrée unique multiplateforme (morfdeploy), en remplacement des scripts
+  `install-service.sh`/`.ps1`. L'ancien binaire `/usr/local/bin/morfSync` est
+  signalé, jamais supprimé.
+
 - Documentation de version alignée sur les liens de dépôt de production.
 
 ## [0.2.9] – 2026-07-19
